@@ -1,5 +1,5 @@
 streamlit
 python-docx
-language-tool-python
 PyMuPDF
-markdown2
+textblob
+
