@@ -1,5 +1,5 @@
 import fitz  # PyMuPDF
-import language_tool_python
+from textblob import TextBlob
 import re
 
 def extract_text_from_pdf(uploaded_file):
@@ -43,20 +43,21 @@ def check_formatting(text):
 def process_pdf(uploaded_file):
     text = extract_text_from_pdf(uploaded_file)
 
-    tool = language_tool_python.LanguageTool('it-IT')
-    matches = tool.check(text)
+    blob = TextBlob(text)
+    corrected_text = str(blob.correct())
 
     grammar_suggestions = []
-    for match in matches:
+    # Nota: TextBlob non fornisce dettagli sui singoli errori corretti,
+    # quindi qui possiamo solo indicare che è stata effettuata una correzione generale.
+    if corrected_text != text:
         grammar_suggestions.append({
-            "message": match.message,
-            "rule": match.ruleId,
-            "offset": match.offset,
-            "length": match.errorLength
+            "message": "Sono state apportate correzioni ortografiche al testo.",
+            "rule": "Correzione Ortografica"
         })
 
     note_suggestions = analyze_notes(text)
     formatting_suggestions = check_formatting(text)
 
     all_suggestions = grammar_suggestions + note_suggestions + formatting_suggestions
-    return text, all_suggestions
+    return corrected_text, all_suggestions
+
