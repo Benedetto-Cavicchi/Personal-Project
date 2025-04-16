@@ -1,1 +1,1 @@
-# Personal-Project
+# legal-reviewer-app
